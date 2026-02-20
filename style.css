@@ -23,26 +23,27 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
-    font-size: 1.6rem;
+    padding: 20px; /* Reduced padding for mobile */
+    font-size: 1.4rem; /* Slightly smaller base font */
     transition: all 0.8s ease;
 }
 
 .container {
     max-width: 650px;
-    width: 100%;
-    border: 12px solid var(--border-color); /* Extra thick wood border */
+    width: 95%; /* Use percentage for flexibility */
+    border: 10px solid var(--border-color); 
     background-color: var(--box-bg);
-    padding: 30px;
+    padding: 20px;
     border-radius: 2px;
-    box-shadow: 15px 15px 0px rgba(0,0,0,0.3);
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
+    box-sizing: border-box; /* Ensures padding doesn't break layout */
 }
 
 h1 { 
     color: var(--header-color); 
     border-bottom: 4px solid var(--header-color); 
-    margin: 0 0 20px 0; 
-    font-size: 3rem;
+    margin: 0 0 15px 0; 
+    font-size: 2.5rem;
     text-align: center;
 }
 
@@ -54,18 +55,18 @@ h1 {
 
 .luck-box { 
     background: var(--luck-bg); 
-    padding: 15px; 
-    border-left: 10px solid var(--header-color); 
-    margin: 25px 0; 
+    padding: 12px; 
+    border-left: 8px solid var(--header-color); 
+    margin: 15px 0; 
 }
 
 .gear-grid { 
     display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 25px; 
-    margin-top: 25px; 
+    grid-template-columns: 1fr 1fr; /* Two columns for desktop */
+    gap: 20px; 
+    margin-top: 20px; 
     border-top: 3px dashed var(--border-color); 
-    padding-top: 20px; 
+    padding-top: 15px; 
 }
 
 .quest-section {
@@ -76,28 +77,54 @@ h1 {
 }
 
 .outlook-container {
-    margin-top: 30px; 
+    margin-top: 25px; 
     border-top: 3px dashed var(--border-color); 
-    padding-top: 20px;
+    padding-top: 15px;
 }
 
-.outlook-item { margin-bottom: 10px; line-height: 1.2; }
+.outlook-item { margin-bottom: 8px; line-height: 1.2; font-size: 1.2rem; }
 .golden-day { color: #d4af37; font-weight: bold; text-shadow: 1px 1px 0px rgba(0,0,0,0.2); }
 
-.controls { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.controls { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
 button {
     font-family: 'VT323', monospace;
     background: var(--border-color);
     color: white;
     border: none;
-    padding: 8px 15px;
+    padding: 8px 12px;
     cursor: pointer;
-    font-size: 1.2rem;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+    font-size: 1.1rem;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
 }
 
-button:active { transform: translate(2px, 2px); box-shadow: none; }
+button:active { transform: translate(1px, 1px); box-shadow: none; }
 .btn-auto { background: #2e7d32; }
 
 ul { padding-left: 20px; list-style-type: '-> '; }
+
+/* ==========================================
+   MOBILE ADJUSTMENTS (Screens under 600px)
+   ========================================== */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    
+    .container {
+        border-width: 6px; /* Thinner border for small screens */
+        padding: 15px;
+    }
+
+    h1 { font-size: 2rem; }
+
+    .gear-grid {
+        grid-template-columns: 1fr; /* Stack Walking/Biking on top of each other */
+        gap: 10px;
+    }
+
+    .gear-column h3 { margin-bottom: 5px; margin-top: 10px; }
+    
+    .controls button {
+        flex: 1 1 40%; /* Make buttons larger and touch-friendly */
+        font-size: 1rem;
+    }
+}

@@ -1,12 +1,23 @@
 /* ==========================================
-   WEATHER LOGIC, EMOJIS & HOROSCOPE
+   STARDW WEATHER ENGINE - FINAL VERSION
    ========================================== */
 
 const weatherCodes = {
-    0: "☀️ Clear Skies", 1: "🌤️ Mainly Clear", 2: "⛅ Partly Cloudy", 3: "☁️ Overcast",
-    45: "🌫️ Foggy", 48: "🌫️ Rime Fog", 51: "🌦️ Drizzle", 61: "🌧️ Rain",
-    71: "🌨️ Light Snow", 73: "❄️ Snowing", 75: "❄️ Heavy Snow", 77: "❄️ Snow Grains",
-    80: "🌦️ Rain Showers", 85: "🌨️ Snow Showers", 95: "⛈️ Thunderstorm"
+    0: "☀️ Clear Skies", 
+    1: "🌤️ Mainly Clear", 
+    2: "⛅ Partly Cloudy", 
+    3: "☁️ Overcast",
+    45: "🌫️ Foggy", 
+    48: "🌫️ Rime Fog", 
+    51: "🌦️ Drizzle", 
+    61: "🌧️ Rain",
+    71: "🌨️ Light Snow", 
+    73: "❄️ Snowing", 
+    75: "❄️ Heavy Snow", 
+    77: "❄️ Snow Grains",
+    80: "🌦️ Rain Showers", 
+    85: "🌨️ Snow Showers", 
+    95: "⛈️ Thunderstorm"
 };
 
 function formatTime(iso) {
@@ -28,6 +39,7 @@ function setSeason(season) {
 
 function autoSeason() {
     const month = new Date().getMonth();
+    // Spring (Mar-May), Summer (Jun-Aug), Fall (Sep-Nov), Winter (Dec-Feb)
     if (month >= 2 && month <= 4) setSeason("spring");
     else if (month >= 5 && month <= 7) setSeason("summer");
     else if (month >= 8 && month <= 10) setSeason("fall");
@@ -37,22 +49,24 @@ function autoSeason() {
 async function fetchHoroscope() {
     const luckBox = document.getElementById('luck');
     const sign = "taurus";
-    // Using a more direct API link
-    const url = `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${sign}&day=today`;
+    
+    // Using a Proxy to bypass GitHub's security blocks
+    const baseApi = `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${sign}&day=today`;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(baseApi)}`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const response = await fetch(proxyUrl);
+        const json = await response.json();
+        // AllOrigins wraps the data in a "contents" string, so we parse it
+        const data = JSON.parse(json.contents);
         const fullHoroscope = data.data.horoscope_data;
 
-        // Split into sentences and grab first/last
+        // Extract first and last sentences
         const sentences = fullHoroscope.match(/[^.!?]+[.!?]+/g) || [fullHoroscope];
         let displayHoroscope = "";
 
         if (sentences.length > 1) {
-            const first = sentences[0].trim();
-            const last = sentences[sentences.length - 1].trim();
-            displayHoroscope = `${first}<br><br>${last}`;
+            displayHoroscope = `${sentences[0].trim()}<br><br>${sentences[sentences.length - 1].trim()}`;
         } else {
             displayHoroscope = fullHoroscope;
         }
@@ -69,12 +83,13 @@ async function fetchHoroscope() {
             </div>
         `;
     } catch (e) {
-        luckBox.innerHTML = `🔮 <b>Daily Luck:</b> The spirits are neutral today (API Offline).`;
+        console.error("Horoscope Error:", e);
+        luckBox.innerHTML = `🔮 <b>Daily Luck:</b> The spirits feel neutral. (Check back later for Taurus luck!)`;
     }
 }
 
 async function startDashboard() {
-    const lat = 41.97;
+    const lat = 41.97; // Chicago 60640
     const lon = -87.66;
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,precipitation,weather_code&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,weather_code&temperature_unit=fahrenheit&timezone=auto`;
 
@@ -85,10 +100,11 @@ async function startDashboard() {
         const currentTemp = Math.round(data.current.temperature_2m);
         const feels = Math.round(data.current.apparent_temperature);
         const wind = data.current.wind_speed_10m;
+        // Use the code to get the emoji + text
         const condition = weatherCodes[data.current.weather_code] || "☀️ Clear";
         
         autoSeason();
-        fetchHoroscope(); // This runs the Taurus logic
+        fetchHoroscope();
 
         document.getElementById('weather-display').innerHTML = `
             <div style="font-size: 2.2rem; color: var(--header-color); font-weight: bold;">${condition}</div>
@@ -100,27 +116,27 @@ async function startDashboard() {
         const walk = document.getElementById('walking-gear');
         const bike = document.getElementById('biking-gear');
 
-        // Chicago Gear Logic
+        // Dynamic Gear Logic
         if (feels < 20) {
-            walk.innerHTML = "<li>Heavy Parka</li><li>Thermal Base</li><li>Balaclava</li><li>Mittens</li>";
-            bike.innerHTML = "<li>Wind Shell</li><li>Puffer Mid</li><li>Lobster Mitts</li><li>Face Shield</li>";
+            walk.innerHTML = "<li>Heavy Parka</li><li>Thermal Base</li><li>Balaclava</li><li>Thick Mittens</li>";
+            bike.innerHTML = "<li>Wind Shell</li><li>Puffer Mid-Layer</li><li>Full Balaclava</li><li>Lobster Mitts</li>";
         } else if (feels < 40) {
-            walk.innerHTML = "<li>Winter Coat</li><li>Fleece Layer</li><li>Beanie</li>";
+            walk.innerHTML = "<li>Winter Coat</li><li>Fleece Mid</li><li>Beanie</li>";
             bike.innerHTML = "<li>Windbreaker</li><li>Light Fleece</li><li>Insulated Gloves</li>";
         } else {
-            walk.innerHTML = "<li>Light Jacket</li><li>T-Shirt</li>";
-            bike.innerHTML = "<li>Wind Vest</li><li>Jersey</li>";
+            walk.innerHTML = "<li>Light Jacket</li><li>Breathable Top</li>";
+            bike.innerHTML = "<li>Wind Vest</li><li>Cycling Jersey</li>";
         }
 
-        // Daily Quests
+        // Daily Quest
         const todayQuest = document.getElementById('today-quest');
-        if (feels < 25 || data.current.weather_code > 3) {
-            todayQuest.innerHTML = `⚒️ <b>Today:</b> Conditions are harsh. Focus on indoor tasks like organizing tools or starting a new cooking project.`;
+        if (data.current.weather_code > 3 || feels < 25) {
+            todayQuest.innerHTML = `⚒️ <b>Today:</b> Conditions are harsh. Focus on indoor tasks like organizing your inventory or cooking.`;
         } else {
-            todayQuest.innerHTML = `⚒️ <b>Today:</b> The valley is peaceful! A great day for an outdoor project or a long bike ride.`;
+            todayQuest.innerHTML = `⚒️ <b>Today:</b> The valley is peaceful! A perfect day for a long bike ride or outdoor maintenance.`;
         }
 
-        // Outlook with Emojis
+        // 3-Day Outlook
         let outHtml = "";
         const labels = ["Today", "Tomorrow", "Sunday"];
         for(let i=0; i<3; i++) {
@@ -138,7 +154,8 @@ async function startDashboard() {
         document.getElementById('outlook').innerHTML = outHtml;
 
     } catch (e) {
-        document.getElementById('weather-display').innerText = "Spirits are blocked!";
+        console.error("Weather Error:", e);
+        document.getElementById('weather-display').innerText = "Spirits are blocked! (Weather API Offline)";
     }
 }
 

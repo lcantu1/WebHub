@@ -126,19 +126,14 @@ async function fetchHoroscope() {
 
         luckBox.innerHTML = `
             <div style="margin-bottom: 10px;">
-                🔮 <b>SPIRIT LUCK:</b> The spirits are ${dailySpirit}
+                🔮 <b>SPIRIT LUCK:</b> ${cleanHoro}
             </div>
-            <div style="border-top: 2px dashed var(--header-color); padding-top: 10px; font-size: 1.3rem; line-height: 1.2;">
-                🐂 <b>TAURUS:</b><br>${cleanHoro}
-            </div>
+           
         `;
     } catch (e) {
         luckBox.innerHTML = `
             <div style="margin-bottom: 10px;">
-                🔮 <b>SPIRIT LUCK:</b> The spirits are ${dailySpirit}
-            </div>
-            <div style="border-top: 2px dashed var(--header-color); padding-top: 10px; font-size: 1.3rem; line-height: 1.2; color: #777;">
-                🐂 <b>TAURUS:</b><br>The stars are obscured by clouds today. Check the notice board tomorrow!
+                🔮 <b>SPIRIT LUCK:</b> The stars are obscured by clouds today. Check the notice board tomorrow!
             </div>
         `;
     }

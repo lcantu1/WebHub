@@ -1,5 +1,5 @@
 /* ==========================================
-   STARDW WEATHER ENGINE - FULL RESTORE
+   STARDW WEATHER ENGINE - THE COMPLETE VERSION
    ========================================== */
 
 const weatherCodes = {
@@ -30,13 +30,13 @@ async function startDashboard() {
             <div class="stat-line">☀️ SUN: ${formatTime(data.daily.sunrise[0])} / ${formatTime(data.daily.sunset[0])}</div>
         `;
 
-        // 3. UPDATE GEAR RECOMMENDATIONS (Full Chicago Edition)
+        // 3. UPDATE GEAR RECOMMENDATIONS
         const walk = document.getElementById('walking-gear');
         const bike = document.getElementById('biking-gear');
         
         if (feels < 20) {
             walk.innerHTML = "<li>Heavy Parka</li><li>Thermal Base Layer</li><li>Balaclava + Beanie</li><li>Heated Mittens</li>";
-            bike.innerHTML = "<li>Extreme Wind Shell</li><li>Puffer Mid-Layer</li><li>Full Face Mask</li><li>Lobster Mitts / Bar Mitts</li>";
+            bike.innerHTML = "<li>Extreme Wind Shell</li><li>Down Mid-Layer</li><li>Full Face Mask</li><li>Lobster Mitts / Bar Mitts</li>";
         } else if (feels < 35) {
             walk.innerHTML = "<li>Winter Coat</li><li>Fleece Mid-layer</li><li>Wool Scarf</li><li>Thick Mittens</li>";
             bike.innerHTML = "<li>Windbreaker Shell</li><li>Light Puffer</li><li>Thermal Headband</li><li>Insulated Gloves</li>";
@@ -48,30 +48,30 @@ async function startDashboard() {
             bike.innerHTML = "<li>Cycling Jersey</li><li>Sun Protection</li>";
         }
 
-        // 4. UPDATE DAILY QUESTS (Fixing the "Stuck" notice board)
+        // 4. UPDATE DAILY QUESTS
         const todayQuest = document.getElementById('today-quest');
         if (current.weather_code > 3 || wind > 18 || feels < 25) {
-            todayQuest.innerHTML = `⚒️ <b>Today's Quest:</b> Harsh conditions in the valley. Focus on indoor tasks like tool maintenance, organizing your inventory, or a cooking project.`;
+            todayQuest.innerHTML = `⚒️ <b>Today's Quest:</b> Harsh conditions in the valley. Focus on indoor tasks like tool maintenance or organizing your inventory.`;
         } else {
             todayQuest.innerHTML = `⚒️ <b>Today's Quest:</b> The spirits are calm! A perfect day for a long bike ride or tending to outdoor projects.`;
         }
 
-        // 5. UPDATE OUTLOOK
+        // 5. UPDATE OUTLOOK (Restored High/Low)
         let outHtml = "";
         const labels = ["Today", "Tomorrow", "Sunday"];
         for(let i=0; i<3; i++) {
             const high = Math.round(data.daily.temperature_2m_max[i]);
+            const low = Math.round(data.daily.temperature_2m_min[i]);
             const dayCond = weatherCodes[data.daily.weather_code[i]] || "☀️ Clear";
-            outHtml += `<div class="outlook-item"><b>${labels[i]}:</b> ${high}°F - ${dayCond}</div>`;
+            outHtml += `<div class="outlook-item"><b>${labels[i]}:</b> High ${high}°F / Low ${low}°F — ${dayCond}</div>`;
         }
         document.getElementById('outlook').innerHTML = outHtml;
 
-        // 6. FETCH HOROSCOPE (Last so it doesn't block the rest)
+        // 6. FETCH HOROSCOPE
         fetchHoroscope();
 
     } catch (err) {
         console.error("Dashboard Error:", err);
-        document.getElementById('weather-display').innerText = "Connection lost. Is the wizard's tower down?";
     }
 }
 
@@ -84,17 +84,33 @@ async function fetchHoroscope() {
         const hData = JSON.parse(pData.contents);
         const rawHoro = hData.data.horoscope_data;
 
-        // Unified Spirit Mood Seeded by Date
+        // Seeded Mood Logic (same across devices)
         const todayStr = new Date().toDateString();
         let seed = 0;
         for (let i = 0; i < todayStr.length; i++) seed += todayStr.charCodeAt(i);
-        const moods = ["very happy!", "in good humor.", "neutral.", "somewhat annoyed."];
-        const spiritMood = moods[seed % 4];
+        
+        // Match spirit tone to horoscope content
+        const lower = rawHoro.toLowerCase();
+        let moodIdx = seed % 4;
+        if (lower.includes("luck") || lower.includes("happy") || lower.includes("success")) moodIdx = 0;
+        if (lower.includes("hard") || lower.includes("stress") || lower.includes("caution")) moodIdx = 3;
 
+        const moods = ["very happy!", "in good humor.", "neutral.", "somewhat annoyed."];
+        const spiritMood = moods[moodIdx];
+
+        // Slice first and last sentences
         const sentences = rawHoro.match(/[^.!?]+[.!?]+/g) || [rawHoro];
         const cleanHoro = sentences.length > 1 ? `${sentences[0].trim()}<br><br>${sentences[sentences.length-1].trim()}` : rawHoro;
 
-        luckBox.innerHTML = `🔮 <b>SPIRIT LUCK:</b> The spirits are ${spiritMood}<br><div style="border-top:2px dashed var(--header-color);margin-top:10px;padding-top:10px;">🐂 <b>TAURUS:</b><br>${cleanHoro}</div>`;
+        // Display: Spirit Luck first, then Horoscope
+        luckBox.innerHTML = `
+            <div style="margin-bottom: 10px;">
+                🔮 <b>SPIRIT LUCK:</b> The spirits are ${spiritMood}
+            </div>
+            <div style="border-top: 2px dashed var(--header-color); padding-top: 10px; font-size: 1.3rem; line-height: 1.2;">
+                🐂 <b>TAURUS:</b><br>${cleanHoro}
+            </div>
+        `;
     } catch (e) {
         luckBox.innerHTML = `🔮 <b>SPIRIT LUCK:</b> The spirits feel neutral today.`;
     }

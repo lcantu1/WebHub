@@ -56,14 +56,23 @@ async function startDashboard() {
             todayQuest.innerHTML = `⚒️ <b>Today's Quest:</b> The spirits are calm! A perfect day for a long bike ride or tending to outdoor projects.`;
         }
 
-        // 5. UPDATE OUTLOOK (Restored High/Low)
+// 5. UPDATE OUTLOOK (Restoring High/Low and Golden Day detection)
         let outHtml = "";
         const labels = ["Today", "Tomorrow", "Sunday"];
         for(let i=0; i<3; i++) {
             const high = Math.round(data.daily.temperature_2m_max[i]);
             const low = Math.round(data.daily.temperature_2m_min[i]);
-            const dayCond = weatherCodes[data.daily.weather_code[i]] || "☀️ Clear";
-            outHtml += `<div class="outlook-item"><b>${labels[i]}:</b> High ${high}°F / Low ${low}°F — ${dayCond}</div>`;
+            const dayCode = data.daily.weather_code[i];
+            const dayCond = weatherCodes[dayCode] || "☀️ Clear";
+            
+            // Golden Day Logic: High > 50 and clear skies (code 0, 1, or 2)
+            const isGolden = (high > 50 && dayCode <= 2);
+
+            outHtml += `
+                <div class="outlook-item">
+                    <b>${labels[i]}:</b> ${high}°F / ${low}°F — ${dayCond}
+                    ${isGolden ? '<span class="golden-day" style="color: #d4af37; font-weight: bold; margin-left: 10px;">☀️ GOLDEN DAY!</span>' : ''}
+                </div>`;
         }
         document.getElementById('outlook').innerHTML = outHtml;
 

@@ -10,26 +10,43 @@
 <body id="season-body">
 
 <div class="container">
-    <h1 id="season-title">📺 LOADING...</h1>
-    <div id="weather-data">Connecting to spirits...</div>
+    <h1 id="season-title">📺 TV: WEATHER</h1>
     
-    <div class="luck-box" id="luck">🔮 Finding fortune...</div>
+    <div id="weather-display" class="weather-header">
+        Gathering data from the valley...
+    </div>
+    
+    <div class="luck-box" id="luck">🔮 Reading the stars...</div>
 
     <div class="gear-grid">
         <div class="gear-column">
             <h3>🚶 WALKING</h3>
-            <ul id="walking-list"></ul>
+            <ul id="walking-gear"></ul>
         </div>
         <div class="gear-column">
             <h3>🚴 BIKING</h3>
-            <ul id="biking-list"></ul>
+            <ul id="biking-gear"></ul>
         </div>
     </div>
 
-    <div class="outlook-section">
+    <div class="quest-section">
+        <h3>🏆 DAILY QUESTS</h3>
+        <div id="today-quest"></div>
+        <div id="future-quest" style="margin-top: 10px;"></div>
+    </div>
+
+    <div class="outlook-container">
         <h3>📅 3-DAY OUTLOOK</h3>
         <div id="outlook"></div>
     </div>
+</div>
+
+<div class="controls">
+    <button onclick="setSeason('spring')">🌸 SPRING</button>
+    <button onclick="setSeason('summer')">☀️ SUMMER</button>
+    <button onclick="setSeason('fall')">🍂 FALL</button>
+    <button onclick="setSeason('winter')">❄️ WINTER</button>
+    <button onclick="autoSeason()" class="btn-auto">🔄 AUTO</button>
 </div>
 
 <script src="script.js"></script>

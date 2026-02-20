@@ -1,7 +1,10 @@
+/* ==========================================
+   STYLING & COLORS
+   ========================================== */
 :root {
-    --page-bg: #2c3e50;        
-    --box-bg: #f4f1ea;         
-    --border-color: #5d4037;   
+    --page-bg: #2c3e50;        /* The background of the "room" */
+    --box-bg: #f4f1ea;         /* The background of the "TV box" */
+    --border-color: #5d4037;   /* Thicker, darker wood border */
     --header-color: #2e7d32;
     --luck-bg: #e1eec3;
     --text-color: #3e2723;
@@ -36,13 +39,74 @@ body {
     box-sizing: border-box;
 }
 
-/* Mobile View Stacking */
+h1 { 
+    color: var(--header-color); 
+    border-bottom: 4px solid var(--header-color); 
+    margin: 0 0 20px 0; 
+    font-size: 3rem;
+    text-align: center;
+}
+
+.weather-header {
+    text-align: center; 
+    border-bottom: 2px solid var(--border-color); 
+    padding-bottom: 10px;
+}
+
+.luck-box { 
+    background: var(--luck-bg); 
+    padding: 15px; 
+    border-left: 10px solid var(--header-color); 
+    margin: 25px 0; 
+}
+
+.gear-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 25px; 
+    margin-top: 25px; 
+    border-top: 3px dashed var(--border-color); 
+    padding-top: 20px; 
+}
+
+.quest-section {
+    background: rgba(255,255,255,0.4);
+    padding: 15px;
+    margin-top: 20px;
+    border: 2px solid var(--border-color);
+}
+
+.outlook-container {
+    margin-top: 30px; 
+    border-top: 3px dashed var(--border-color); 
+    padding-top: 20px;
+}
+
+.outlook-item { margin-bottom: 10px; line-height: 1.2; }
+.golden-day { color: #d4af37; font-weight: bold; text-shadow: 1px 1px 0px rgba(0,0,0,0.2); }
+
+.controls { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+button {
+    font-family: 'VT323', monospace;
+    background: var(--border-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+}
+
+button:active { transform: translate(2px, 2px); box-shadow: none; }
+.btn-auto { background: #2e7d32; }
+
+ul { padding-left: 20px; list-style-type: '-> '; }
+
+/* Mobile Stacking */
 @media (max-width: 600px) {
     .gear-grid {
         grid-template-columns: 1fr;
         gap: 15px;
-    }
-    .container {
-        border-width: 8px; /* Slightly thinner for small mobile screens */
     }
 }

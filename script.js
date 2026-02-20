@@ -1,12 +1,12 @@
 /* ==========================================
-   WEATHER LOGIC & GEAR DATABASE
+   WEATHER LOGIC, EMOJIS & HOROSCOPE
    ========================================== */
 
 const weatherCodes = {
-    0: "Clear Skies", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
-    45: "Foggy", 48: "Rime Fog", 51: "Drizzle", 61: "Rain",
-    71: "Light Snow", 73: "Snowing", 75: "Heavy Snow", 77: "Snow Grains",
-    80: "Rain Showers", 85: "Snow Showers", 95: "Thunderstorm"
+    0: "☀️ Clear Skies", 1: "🌤️ Mainly Clear", 2: "⛅ Partly Cloudy", 3: "☁️ Overcast",
+    45: "🌫️ Foggy", 48: "🌫️ Rime Fog", 51: "🌦️ Drizzle", 61: "🌧️ Rain",
+    71: "🌨️ Light Snow", 73: "❄️ Snowing", 75: "❄️ Heavy Snow", 77: "❄️ Snow Grains",
+    80: "🌦️ Rain Showers", 85: "🌨️ Snow Showers", 95: "⛈️ Thunderstorm"
 };
 
 function formatTime(iso) {
@@ -37,6 +37,7 @@ function autoSeason() {
 async function fetchHoroscope() {
     const luckBox = document.getElementById('luck');
     const sign = "taurus";
+    // Using a more direct API link
     const url = `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${sign}&day=today`;
 
     try {
@@ -44,10 +45,17 @@ async function fetchHoroscope() {
         const data = await response.json();
         const fullHoroscope = data.data.horoscope_data;
 
-        const sentences = fullHoroscope.split('. ');
-        let displayHoroscope = (sentences.length > 1) 
-            ? `${sentences[0]}.<br><br>${sentences[sentences.length - 1]}` 
-            : fullHoroscope;
+        // Split into sentences and grab first/last
+        const sentences = fullHoroscope.match(/[^.!?]+[.!?]+/g) || [fullHoroscope];
+        let displayHoroscope = "";
+
+        if (sentences.length > 1) {
+            const first = sentences[0].trim();
+            const last = sentences[sentences.length - 1].trim();
+            displayHoroscope = `${first}<br><br>${last}`;
+        } else {
+            displayHoroscope = fullHoroscope;
+        }
 
         const spirits = ["very happy", "in good humor", "neutral", "somewhat annoyed"];
         const dailySpirit = spirits[Math.floor(Math.random() * spirits.length)];
@@ -61,7 +69,7 @@ async function fetchHoroscope() {
             </div>
         `;
     } catch (e) {
-        luckBox.innerHTML = `🔮 <b>Daily Luck:</b> The spirits are neutral today.`;
+        luckBox.innerHTML = `🔮 <b>Daily Luck:</b> The spirits are neutral today (API Offline).`;
     }
 }
 
@@ -77,10 +85,10 @@ async function startDashboard() {
         const currentTemp = Math.round(data.current.temperature_2m);
         const feels = Math.round(data.current.apparent_temperature);
         const wind = data.current.wind_speed_10m;
-        const condition = weatherCodes[data.current.weather_code] || "Clear";
+        const condition = weatherCodes[data.current.weather_code] || "☀️ Clear";
         
         autoSeason();
-        fetchHoroscope();
+        fetchHoroscope(); // This runs the Taurus logic
 
         document.getElementById('weather-display').innerHTML = `
             <div style="font-size: 2.2rem; color: var(--header-color); font-weight: bold;">${condition}</div>
@@ -92,36 +100,33 @@ async function startDashboard() {
         const walk = document.getElementById('walking-gear');
         const bike = document.getElementById('biking-gear');
 
-        // GEAR LOGIC
-        if (feels < 15) {
-            walk.innerHTML = "<li>Heavy Parka</li><li>Thermal Underwear</li><li>Balaclava + Beanie</li><li>Heated Mittens</li>";
-            bike.innerHTML = "<li>Extreme Wind Shell</li><li>Down Mid-Layer</li><li>Full Balaclava</li><li>Bar Mitts/Pogies</li>";
-        } else if (feels < 32) {
-            walk.innerHTML = "<li>Winter Coat</li><li>Fleece Mid-layer</li><li>Wool Scarf</li><li>Thick Mittens</li>";
-            bike.innerHTML = "<li>Windbreaker Shell</li><li>Light Puffer</li><li>Thermal Face Mask</li><li>Lobster Mitts</li>";
-        } else if (feels < 50) {
-            walk.innerHTML = "<li>Light Jacket</li><li>Sweater</li><li>Beanie</li>";
-            bike.innerHTML = "<li>Wind Vest</li><li>Light Fleece</li><li>Long Finger Gloves</li>";
+        // Chicago Gear Logic
+        if (feels < 20) {
+            walk.innerHTML = "<li>Heavy Parka</li><li>Thermal Base</li><li>Balaclava</li><li>Mittens</li>";
+            bike.innerHTML = "<li>Wind Shell</li><li>Puffer Mid</li><li>Lobster Mitts</li><li>Face Shield</li>";
+        } else if (feels < 40) {
+            walk.innerHTML = "<li>Winter Coat</li><li>Fleece Layer</li><li>Beanie</li>";
+            bike.innerHTML = "<li>Windbreaker</li><li>Light Fleece</li><li>Insulated Gloves</li>";
         } else {
-            walk.innerHTML = "<li>Long Sleeve Shirt</li><li>Comfortable Pants</li>";
-            bike.innerHTML = "<li>Cycling Jersey</li><li>Sun Protection</li>";
+            walk.innerHTML = "<li>Light Jacket</li><li>T-Shirt</li>";
+            bike.innerHTML = "<li>Wind Vest</li><li>Jersey</li>";
         }
 
-        // DAILY QUESTS
+        // Daily Quests
         const todayQuest = document.getElementById('today-quest');
-        if (wind > 15 || feels < 25) {
-            todayQuest.innerHTML = `⚒️ <b>Today:</b> Harsh conditions. Focus on indoor tasks like organizing tools or starting a new cooking project.`;
+        if (feels < 25 || data.current.weather_code > 3) {
+            todayQuest.innerHTML = `⚒️ <b>Today:</b> Conditions are harsh. Focus on indoor tasks like organizing tools or starting a new cooking project.`;
         } else {
-            todayQuest.innerHTML = `⚒️ <b>Today:</b> The valley is peaceful! A great day for a long bike ride or tending to outdoor projects.`;
+            todayQuest.innerHTML = `⚒️ <b>Today:</b> The valley is peaceful! A great day for an outdoor project or a long bike ride.`;
         }
 
-        // OUTLOOK
+        // Outlook with Emojis
         let outHtml = "";
         const labels = ["Today", "Tomorrow", "Sunday"];
         for(let i=0; i<3; i++) {
             const high = Math.round(data.daily.temperature_2m_max[i]);
             const low = Math.round(data.daily.temperature_2m_min[i]);
-            const cond = weatherCodes[data.daily.weather_code[i]] || "Clear";
+            const cond = weatherCodes[data.daily.weather_code[i]] || "☀️ Clear";
             const dateStr = formatDateLabel(data.daily.sunrise[i]);
             const isGolden = high > 50 && data.daily.weather_code[i] < 3;
 

@@ -59,6 +59,7 @@ async function startDashboard() {
 // 5. UPDATE OUTLOOK (Restoring High/Low and Golden Day detection)
         let outHtml = "";
         const labels = ["Today", "Tomorrow", "Sunday"];
+        
         for(let i=0; i<3; i++) {
             const high = Math.round(data.daily.temperature_2m_max[i]);
             const low = Math.round(data.daily.temperature_2m_min[i]);
@@ -71,7 +72,7 @@ async function startDashboard() {
             outHtml += `
                 <div class="outlook-item">
                     <b>${labels[i]}:</b> ${high}°F / ${low}°F — ${dayCond}
-                    ${isGolden ? '<span class="golden-day" style="color: #d4af37; font-weight: bold; margin-left: 10px;">☀️ GOLDEN DAY!</span>' : ''}
+                    ${isGolden ? '<span class="golden-day"> ☀️ GOLDEN DAY!</span>' : ''}
                 </div>`;
         }
         document.getElementById('outlook').innerHTML = outHtml;

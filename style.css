@@ -1,67 +1,103 @@
 /* ==========================================
-   TWEAK COLORS HERE
+   STYLING & COLORS
    ========================================== */
 :root {
-    --bg-color: #f4f1ea;
-    --border-color: #7d5233;
+    --page-bg: #2c3e50;        
+    --box-bg: #f4f1ea;         
+    --border-color: #5d4037;   
     --header-color: #2e7d32;
     --luck-bg: #e1eec3;
     --text-color: #3e2723;
 }
 
 /* Seasonal Theme Overrides */
-body.spring { --header-color: #db7093; --luck-bg: #f8bbd0; --bg-color: #e8f5e9; }
-body.summer { --header-color: #fbc02d; --luck-bg: #fff9c4; --bg-color: #fffde7; }
-body.fall   { --header-color: #d84315; --luck-bg: #ffccbc; --bg-color: #efebe9; }
-body.winter { --header-color: #1976d2; --luck-bg: #bbdefb; --bg-color: #f5f5f5; }
+body.spring { --header-color: #db7093; --luck-bg: #f8bbd0; --box-bg: #f1f8e9; --page-bg: #a5d6a7; }
+body.summer { --header-color: #fbc02d; --luck-bg: #fff9c4; --box-bg: #fffde7; --page-bg: #ffe082; }
+body.fall   { --header-color: #d84315; --luck-bg: #ffccbc; --box-bg: #efebe9; --page-bg: #bcaaa4; }
+body.winter { --header-color: #1976d2; --luck-bg: #bbdefb; --box-bg: #f5f5f5; --page-bg: #90caf9; }
 
-/* Main Layout Styles */
 body {
-    background-color: var(--bg-color);
+    background-color: var(--page-bg);
     color: var(--text-color);
     font-family: 'VT323', monospace;
     display: flex;
-    justify-content: center;
-    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
     font-size: 1.6rem;
-    transition: background-color 0.8s ease;
+    transition: all 0.8s ease;
 }
 
 .container {
     max-width: 650px;
     width: 100%;
-    border: 6px solid var(--border-color); /* Change 6px to make border thicker */
-    background-color: var(--bg-color);
-    padding: 25px;
-    border-radius: 4px;
-    box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+    border: 12px solid var(--border-color); /* Extra thick wood border */
+    background-color: var(--box-bg);
+    padding: 30px;
+    border-radius: 2px;
+    box-shadow: 15px 15px 0px rgba(0,0,0,0.3);
 }
 
 h1 { 
     color: var(--header-color); 
-    border-bottom: 3px solid var(--header-color); 
-    margin: 0 0 15px 0; 
+    border-bottom: 4px solid var(--header-color); 
+    margin: 0 0 20px 0; 
+    font-size: 3rem;
+    text-align: center;
+}
+
+.weather-header {
+    text-align: center; 
+    border-bottom: 2px solid var(--border-color); 
+    padding-bottom: 10px;
 }
 
 .luck-box { 
     background: var(--luck-bg); 
-    padding: 12px; 
-    border-left: 6px solid var(--header-color); 
-    margin: 20px 0; 
+    padding: 15px; 
+    border-left: 10px solid var(--header-color); 
+    margin: 25px 0; 
 }
 
 .gear-grid { 
     display: grid; 
     grid-template-columns: 1fr 1fr; 
-    gap: 20px; 
+    gap: 25px; 
     margin-top: 25px; 
-    border-top: 2px dashed var(--border-color); 
-    padding-top: 15px; 
+    border-top: 3px dashed var(--border-color); 
+    padding-top: 20px; 
 }
 
-.golden-day { 
-    color: #d4af37; 
-    text-shadow: 1px 1px 0px #000; 
+.quest-section {
+    background: rgba(255,255,255,0.4);
+    padding: 15px;
+    margin-top: 20px;
+    border: 2px solid var(--border-color);
 }
+
+.outlook-container {
+    margin-top: 30px; 
+    border-top: 3px dashed var(--border-color); 
+    padding-top: 20px;
+}
+
+.outlook-item { margin-bottom: 10px; line-height: 1.2; }
+.golden-day { color: #d4af37; font-weight: bold; text-shadow: 1px 1px 0px rgba(0,0,0,0.2); }
+
+.controls { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+button {
+    font-family: 'VT323', monospace;
+    background: var(--border-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+}
+
+button:active { transform: translate(2px, 2px); box-shadow: none; }
+.btn-auto { background: #2e7d32; }
 
 ul { padding-left: 20px; list-style-type: '-> '; }
